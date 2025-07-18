@@ -1,2 +1,44 @@
-<h1>Posts#index</h1>
-<p>Find me in app/views/posts/index.html.erb</p>
+<h1>Members-Only Clubhouse</h1>
+
+<div style="margin-bottom: 1em;">
+  <% if user_signed_in? %>
+    <p>Welcome, <%= current_user.username %>!</p>
+    <%= link_to "Create Post", "#post-form" %> |
+    <%= link_to "Sign out", destroy_user_session_path, method: :delete %>
+  <% else %>
+    <%= link_to "Sign in", new_user_session_path %> |
+    <%= link_to "Sign up", new_user_registration_path %>
+  <% end %>
+</div>
+
+<% if user_signed_in? %>
+  <div id="post-form">
+    <%= form_with model: @post, local: true do |form| %>
+      <div>
+        <%= form.label :content, "Write a post:" %><br>
+        <%= form.text_area :content, rows: 3, cols: 50 %>
+      </div>
+      <div>
+        <%= form.submit "Post" %>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
+<hr>
+
+<h2>All Posts</h2>
+
+<% @posts.each do |post| %>
+  <div style="margin-bottom: 1em;">
+    <p><strong>Message:</strong> <%= post.content %></p>
+    <p>
+      <strong>Posted by:</strong>
+      <% if user_signed_in? %>
+        <%= post.user.username %>
+      <% else %>
+        Anonymous
+      <% end %>
+    </p>
+  </div>
+<% end %>
